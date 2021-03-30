@@ -3,54 +3,28 @@ import { Pair, Token, Bundle } from '../types/schema'
 import { BigDecimal, Address, BigInt } from '@graphprotocol/graph-ts/index'
 import { ZERO_BD, factoryContract, ADDRESS_ZERO, ONE_BD } from './helpers'
 
-const WETH_ADDRESS = '0x7466d7d0c21fa05f32f5a0fa27e12bdc06348ce2'
+const WETH_ADDRESS = '0xcf664087a5bb0237a0bad6742852ec6c8d69a27a'
 // using BUSD pair
-const USDC_WETH_PAIR = '0x480a5f5517a0b7a8cc376dfe058b2dd782b07ece' // created 10008355
-const DAI_WETH_PAIR = '0xa478c2975ab1ea89e8196811f51a7b7ade33eb11' // created block 10042267
-const USDT_WETH_PAIR = '0x0d4a11d5eeaac28ec3f61d100daf4d40471f1852' // created block 10093341
+const USDC_WETH_PAIR = '0x4af68ad33eb03960ce146d4ecfba8f583d4a7ad8' // created 10008355
+
+
+//const DAI_WETH_PAIR = '0xa478c2975ab1ea89e8196811f51a7b7ade33eb11' // created block 10042267
+//const USDT_WETH_PAIR = '0x0d4a11d5eeaac28ec3f61d100daf4d40471f1852' // created block 10093341
 
 export function getEthPriceInUSD(): BigDecimal {
-  // todo set essential pairs first
-  // fetch eth prices for each stablecoin
-  let daiPair = Pair.load(DAI_WETH_PAIR) // dai is token0
   let usdcPair = Pair.load(USDC_WETH_PAIR) // usdc is token0
-  let usdtPair = Pair.load(USDT_WETH_PAIR) // usdt is token1
 
   if (usdcPair !== null) {
     return usdcPair.token0Price
   }
 
-  // all 3 have been created
-  if (daiPair !== null && usdcPair !== null && usdtPair !== null) {
-    let totalLiquidityETH = daiPair.reserve1.plus(usdcPair.reserve1).plus(usdtPair.reserve0)
-    let daiWeight = daiPair.reserve1.div(totalLiquidityETH)
-    let usdcWeight = usdcPair.reserve1.div(totalLiquidityETH)
-    let usdtWeight = usdtPair.reserve0.div(totalLiquidityETH)
-    return daiPair.token0Price
-      .times(daiWeight)
-      .plus(usdcPair.token0Price.times(usdcWeight))
-      .plus(usdtPair.token1Price.times(usdtWeight))
-    // dai and USDC have been created
-  } else if (daiPair !== null && usdcPair !== null) {
-    let totalLiquidityETH = daiPair.reserve1.plus(usdcPair.reserve1)
-    let daiWeight = daiPair.reserve1.div(totalLiquidityETH)
-    let usdcWeight = usdcPair.reserve1.div(totalLiquidityETH)
-    return daiPair.token0Price.times(daiWeight).plus(usdcPair.token0Price.times(usdcWeight))
-    // USDC is the only pair so far
-  } else if (usdcPair !== null) {
-    return usdcPair.token0Price
-  } else {
-    return ZERO_BD
-  }
+  return ZERO_BD
 }
 
 // token where amounts should contribute to tracked volume and liquidity
 let WHITELIST: string[] = [
-  "0x0e80905676226159cc3ff62b1876c907c91f7395",
-  "0x1e120b3b4af96e7f394ecaf84375b1c661830013",
-  "0x6689f57ad16c374783585ba2c77f5316789886f2",
-  "0x6c4387c4f570aa8cadcaffc5e73ecb3d0f8fc593",
-  "0x7466d7d0c21fa05f32f5a0fa27e12bdc06348ce2"
+  //"0xcf664087a5bb0237a0bad6742852ec6c8d69a27a",
+  //"0xe176ebe47d621b984a73036b9da5d834411ef734"
 ]
 
 // minimum liquidity required to count towards tracked volume for pairs with small # of Lps
@@ -66,6 +40,8 @@ let MINIMUM_LIQUIDITY_THRESHOLD_ETH = BigDecimal.fromString('0')
  * @todo update to be derived ETH (add stablecoin estimates)
  **/
 export function findEthPerToken(token: Token): BigDecimal {
+  // return ONE_BD
+
   if (token.id == WETH_ADDRESS) {
     return ONE_BD
   }
@@ -100,6 +76,9 @@ export function getTrackedVolumeUSD(
   token1: Token,
   pair: Pair
 ): BigDecimal {
+  // todo
+  // return ZERO_BD
+
   let bundle = Bundle.load('1')
   let price0 = token0.derivedETH.times(bundle.ethPrice)
   let price1 = token1.derivedETH.times(bundle.ethPrice)
@@ -159,6 +138,9 @@ export function getTrackedLiquidityUSD(
   tokenAmount1: BigDecimal,
   token1: Token
 ): BigDecimal {
+  // todo
+  // return ZERO_BD
+
   let bundle = Bundle.load('1')
   let price0 = token0.derivedETH.times(bundle.ethPrice)
   let price1 = token1.derivedETH.times(bundle.ethPrice)

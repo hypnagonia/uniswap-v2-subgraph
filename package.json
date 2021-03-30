@@ -12,7 +12,11 @@
     "deploy-staging": "graph deploy $THE_GRAPH_GITHUB_USER/$THE_GRAPH_SUBGRAPH_NAME /Uniswap --ipfs https://api.staging.thegraph.com/ipfs/ --node https://api.staging.thegraph.com/deploy/",
     "watch-local": "graph deploy graphprotocol/Uniswap2 --watch --debug --node http://127.0.0.1:8020/ --ipfs http://localhost:5001",
     "create-stage": "graph create --node http://52.224.106.150:8020/ harmony/swoop",
-    "deploy-stage": "graph deploy --node http://52.224.106.150:8020/ --ipfs http://localhost:5001 harmony/swoop"
+    "deploy-stage": "graph deploy --node http://52.224.106.150:8020/ --ipfs http://localhost:5001 harmony/swoop",
+
+    "create-mainnet": "graph create --node http://52.149.230.198:8020/ harmony/viper",
+    "deploy-mainnet": "graph deploy --node http://52.149.230.198:8020/ --ipfs https://ipfs.infura.io:5001 harmony/viper",
+    "remove-mainnet": "graph remove --node http://52.149.230.198:8020/ harmony/viper"
   },
   "devDependencies": {
     "@graphprotocol/graph-cli": "^0.16.0",
