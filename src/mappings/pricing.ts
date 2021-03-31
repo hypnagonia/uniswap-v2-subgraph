@@ -48,19 +48,14 @@ let MINIMUM_LIQUIDITY_THRESHOLD_ETH = BigDecimal.fromString('0')
  * @todo update to be derived ETH (add stablecoin estimates)
  **/
 export function findEthPerToken(token: Token): BigDecimal {
-  // return ONE_BD
+  return ONE_BD
 
   if (token.id == WETH_ADDRESS) {
     return ONE_BD
   }
   // loop through whitelist and check if paired with any
   for (let i = 0; i < WHITELIST.length; ++i) {
-    let tryPairAddress = factoryContract.try_getPair(Address.fromString(token.id), Address.fromString(WHITELIST[i]))
-    if (tryPairAddress.reverted) {
-        return ONE_BD
-    }
-
-    let pairAddress = tryPairAddress.value
+    let pairAddress = factoryContract.getPair(Address.fromString(token.id), Address.fromString(WHITELIST[i]))
 
     if (pairAddress.toHexString() != ADDRESS_ZERO) {
       let pair = Pair.load(pairAddress.toHexString())
